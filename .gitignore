@@ -1,0 +1,46 @@
+# ── Virtual environments ──────────────────────────────────────
+.venv/
+venv/
+env/
+.env/
+
+# ── Python build artifacts ────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+spanish_eit_scorer.egg-info/
+
+# ── Pytest / coverage ─────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+
+# ── Generated data (large, reproducible from seed) ───────────
+data/
+
+# ── IDE / editor ──────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+
+# ── Jupyter ───────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb

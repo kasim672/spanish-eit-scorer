@@ -1,0 +1,39 @@
+# ============================================================
+# requirements.lock.txt
+# Pinned versions for full reproducibility
+# Python >= 3.9
+# Install: pip install -r requirements.lock.txt
+# ============================================================
+
+pyyaml==6.0.1
+pydantic==2.5.3
+numpy==1.26.2
+pandas==2.1.4
+scikit-learn==1.3.2
+joblib==1.3.2
+tqdm==4.66.1
+spacy==3.7.2
+fastapi==0.104.1
+uvicorn==0.24.0
+starlette==0.27.0
+python-multipart==0.0.6
+aiofiles==23.2.1
+anyio==3.7.1
+click==8.1.7
+h11==0.14.0
+httptools==0.6.1
+idna==3.6
+sniffio==1.3.0
+typing_extensions==4.9.0
+annotated-types==0.6.0
+pydantic-core==2.14.6
+
+# ============================================================
+# spaCy Spanish models (install separately after pip install):
+#
+#   python -m spacy download es_core_news_sm   # ~12 MB  – fast
+#   python -m spacy download es_core_news_md   # ~43 MB  – recommended
+#   python -m spacy download es_core_news_lg   # ~560 MB – highest accuracy
+#
+# The scorer auto-detects the best available model (lg > md > sm > fallback).
+# ============================================================

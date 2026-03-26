@@ -1,0 +1,484 @@
+{
+  "items": [
+    {
+      "item_id": "eit_01",
+      "reference": "El niño come una manzana roja.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_02",
+      "reference": "La niña bebe agua fría.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_03",
+      "reference": "El perro corre por el parque.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_04",
+      "reference": "Ella tiene un libro azul.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_05",
+      "reference": "Nosotros vivimos en una casa grande.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_06",
+      "reference": "El gato duerme mucho.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_07",
+      "reference": "María come pan con mantequilla.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_08",
+      "reference": "Ellos juegan en el jardín.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_09",
+      "reference": "Yo tengo dos hermanos.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_10",
+      "reference": "El libro está en la mesa.",
+      "max_points": 4,
+      "level": "A1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_11",
+      "reference": "Nosotros vamos al mercado mañana.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_12",
+      "reference": "La profesora habla con los estudiantes.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_13",
+      "reference": "Ella necesita comprar leche y pan.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_14",
+      "reference": "Los perros corren rápidamente por el parque.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_15",
+      "reference": "Mi madre cocina muy bien todos los días.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_16",
+      "reference": "El estudiante lee el libro con interés.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_17",
+      "reference": "Sus padres vinieron desde muy lejos.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_18",
+      "reference": "Siempre llega tarde a sus clases.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_19",
+      "reference": "El médico trabaja en el hospital grande.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_20",
+      "reference": "La familia come junta en la noche.",
+      "max_points": 4,
+      "level": "A2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_21",
+      "reference": "María le dio el regalo a su madre.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_22",
+      "reference": "El médico le recetó medicamentos al paciente.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_23",
+      "reference": "Las flores del jardín son muy bonitas.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_24",
+      "reference": "Tenemos que estudiar mucho para el examen.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_25",
+      "reference": "El perro grande persiguió al gato pequeño.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_26",
+      "reference": "Sus padres vinieron desde muy lejos para verla.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_27",
+      "reference": "El estudiante leyó el libro con mucho interés.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_28",
+      "reference": "La semana pasada fuimos al cine con los amigos.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_29",
+      "reference": "Mi hermano aprendió a cocinar durante la pandemia.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_30",
+      "reference": "Ella se despertó temprano para ir al trabajo.",
+      "max_points": 4,
+      "level": "B1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_31",
+      "reference": "Quiero que vengas a la fiesta esta noche.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_32",
+      "reference": "Es importante que los estudiantes practiquen todos los días.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_33",
+      "reference": "Me alegra que hayas llegado a tiempo.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_34",
+      "reference": "Le pedí que me explicara el problema con más detalle.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_35",
+      "reference": "Aunque estaba cansada, terminó todo el trabajo.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_36",
+      "reference": "El informe que presentó el director fue muy completo.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_37",
+      "reference": "Se lo explicaré cuando tenga más tiempo.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_38",
+      "reference": "Los resultados del estudio nos sorprendieron mucho.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_39",
+      "reference": "Había mucha gente cuando llegamos al aeropuerto.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_40",
+      "reference": "La empresa se ha visto obligada a cerrar varios departamentos.",
+      "max_points": 4,
+      "level": "B2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_41",
+      "reference": "Si hubieras llegado antes, habrías visto la presentación.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_42",
+      "reference": "Es fundamental que se revisen los protocolos de seguridad.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_43",
+      "reference": "A pesar de los esfuerzos realizados, no se lograron los objetivos.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_44",
+      "reference": "La hipótesis que se planteó inicialmente resultó ser incorrecta.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_45",
+      "reference": "Me sorprende que no hayan considerado esa alternativa.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_46",
+      "reference": "Las consecuencias de esa decisión se harán evidentes con el tiempo.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_47",
+      "reference": "Habría sido mejor consultar a los expertos antes de actuar.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_48",
+      "reference": "El análisis estadístico demostró que los resultados eran significativos.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_49",
+      "reference": "Se desconoce si el fenómeno obedece a causas naturales o artificiales.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_50",
+      "reference": "La propuesta fue rechazada por no cumplir con los criterios establecidos.",
+      "max_points": 4,
+      "level": "C1",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_51",
+      "reference": "Cabe preguntarse si las medidas adoptadas surtirán el efecto deseado.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_52",
+      "reference": "El fenómeno fue objeto de debate durante décadas sin llegar a conclusión.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_53",
+      "reference": "Se arguyó que los datos presentados carecían de validez empírica.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_54",
+      "reference": "La ambigüedad inherente al texto dificultó su interpretación unívoca.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_55",
+      "reference": "Habida cuenta de los antecedentes, la resolución resultó previsible.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_56",
+      "reference": "Los paradigmas teóricos vigentes resultan insuficientes para explicarlo.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_57",
+      "reference": "El fallo judicial fue recurrido por considerarse desproporcionado.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_58",
+      "reference": "La dicotomía entre forma y contenido subyace a toda producción artística.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_59",
+      "reference": "La reconfiguración del espacio urbano conlleva implicaciones sociales profundas.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    },
+    {
+      "item_id": "eit_60",
+      "reference": "El esclarecimiento de los hechos depende de que se aporten nuevas pruebas.",
+      "max_points": 4,
+      "level": "C2",
+      "domain": null,
+      "meta": {}
+    }
+  ]
+}

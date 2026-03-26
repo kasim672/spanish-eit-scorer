@@ -1,0 +1,18 @@
+{
+  "items": [
+    {"item_id": "eit_01", "reference": "El niño come una manzana roja.",      "max_points": 4, "level": "A1"},
+    {"item_id": "eit_21", "reference": "María le dio el regalo a su madre.",   "max_points": 4, "level": "B1"},
+    {"item_id": "eit_31", "reference": "Quiero que vengas a la fiesta esta noche.", "max_points": 4, "level": "B2"},
+    {"item_id": "eit_41", "reference": "Si hubieras llegado antes, habrías visto la presentación.", "max_points": 4, "level": "C1"}
+  ],
+  "responses": [
+    {"participant_id": "P001", "item_id": "eit_01", "response_text": "El niño come una manzana roja.", "human_rater_a": 4},
+    {"participant_id": "P001", "item_id": "eit_21", "response_text": "María dio el regalo a su madre.", "human_rater_a": 3},
+    {"participant_id": "P001", "item_id": "eit_31", "response_text": "Quiero que vienes a la fiesta.", "human_rater_a": 3},
+    {"participant_id": "P001", "item_id": "eit_41", "response_text": "Si llegaras antes habrías visto", "human_rater_a": 2},
+    {"participant_id": "P002", "item_id": "eit_01", "response_text": "El niño come manzana.",          "human_rater_a": 3},
+    {"participant_id": "P002", "item_id": "eit_21", "response_text": "María le dio regalo a su madre.", "human_rater_a": 3},
+    {"participant_id": "P002", "item_id": "eit_31", "response_text": "Quiero que vengas.",              "human_rater_a": 2},
+    {"participant_id": "P002", "item_id": "eit_41", "response_text": "",                                "human_rater_a": 0}
+  ]
+}
