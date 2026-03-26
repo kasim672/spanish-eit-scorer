@@ -101,7 +101,6 @@ def _run_scoring(items_list, responses_list, rubric: RubricConfig) -> list[dict]
             "human_rater_a":    ss.human_rater_a,
             "human_rater_b":    ss.human_rater_b,
             "adjudicated":      ss.adjudicated,
-            "fingerprint":      ss.trace.deterministic_fingerprint,
             "rule_fired":       ss.trace.applied_rule_ids[0] if ss.trace.applied_rule_ids else "",
             "total_edits":      ss.trace.total_edits,
             "content_subs":     ss.trace.content_subs,

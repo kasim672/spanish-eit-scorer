@@ -25,7 +25,7 @@ coverage.xml
 *.cover
 
 # ── Generated data (large, reproducible from seed) ───────────
-data/
+/data/
 
 # ── IDE / editor ──────────────────────────────────────────────
 .vscode/

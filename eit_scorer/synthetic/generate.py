@@ -324,7 +324,6 @@ class LargeDatasetGenerator:
                 "human_rater_a":     float(rater_a),
                 "human_rater_b":     float(rater_b),
                 "adjudicated":       adj,
-                "fingerprint":       scored.trace.deterministic_fingerprint,
                 "rule_fired":        scored.trace.applied_rule_ids[0] if scored.trace.applied_rule_ids else "",
                 "total_edits":       scored.trace.total_edits,
                 "content_subs":      scored.trace.content_subs,

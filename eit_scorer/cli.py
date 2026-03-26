@@ -94,7 +94,6 @@ def cmd_score(args) -> int:
         d["content_subs"]      = ss.trace.content_subs
         d["overlap_ratio"]     = round(ss.trace.overlap_ratio, 4)
         d["rule_fired"]        = ss.trace.applied_rule_ids[0] if ss.trace.applied_rule_ids else ""
-        d["fingerprint"]       = ss.trace.deterministic_fingerprint
         d["adjudicated"]       = ss.adjudicated
         scored_rows.append(d)
 

@@ -12,16 +12,13 @@ Pipeline:
   6. Build ScoreContext (feature vector for rules)
   7. Apply rules (first match wins)
   8. Clamp score to [0, max_points]
-  9. Build ScoringTrace + generate SHA-256 fingerprint
- 10. Return ScoredSentence
+  9. Return ScoredSentence
 
-Invariant: Same (item, response, rubric) → same score + same fingerprint.
+Invariant: Same (item, response, rubric) → same score.
 """
 
 from __future__ import annotations
 
-import hashlib
-import json
 from dataclasses import dataclass
 
 from eit_scorer.core.alignment      import align_tokens
@@ -32,7 +29,6 @@ from eit_scorer.core.tokenization   import tokenize
 from eit_scorer.data.models         import (
     AlignmentOp, EITItem, EITResponse, ScoredSentence, ScoringTrace
 )
-
 
 # ─────────────────────────────────────────────────────────────
 # SCORE CONTEXT (feature vector for rule evaluation)
@@ -52,7 +48,7 @@ class ScoreContext:
 
 
 # ─────────────────────────────────────────────────────────────
-# RULE MATCHING
+# SCORE CONTEXT (feature vector for rule evaluation)
 # ─────────────────────────────────────────────────────────────
 
 _OPS = {
@@ -120,41 +116,6 @@ def _rule_matches(rule_when: dict, ctx: ScoreContext) -> bool:
 
 
 # ─────────────────────────────────────────────────────────────
-# FINGERPRINT
-# ─────────────────────────────────────────────────────────────
-
-def _make_fingerprint(
-    rubric_name:    str,
-    rubric_version: str,
-    match_ref:      str,
-    match_hyp:      str,
-    ref_tokens:     list[str],
-    hyp_tokens:     list[str],
-    alignment:      list[AlignmentOp],
-    applied_rules:  list[str],
-    score:          int,
-) -> str:
-    """
-    SHA-256 fingerprint over all key deterministic components.
-    Guarantees: same inputs → same fingerprint.
-    Independent of Python's built-in hash randomization.
-    """
-    payload = json.dumps({
-        "rubric_name":    rubric_name,
-        "rubric_version": rubric_version,
-        "match_ref":      match_ref,
-        "match_hyp":      match_hyp,
-        "ref_tokens":     ref_tokens,
-        "hyp_tokens":     hyp_tokens,
-        "alignment":      [(op.op, op.ref_token, op.hyp_token) for op in alignment],
-        "applied_rules":  applied_rules,
-        "score":          score,
-    }, sort_keys=True, ensure_ascii=False)
-
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-
-# ─────────────────────────────────────────────────────────────
 # MAIN SCORING FUNCTION
 # ─────────────────────────────────────────────────────────────
 
@@ -219,20 +180,7 @@ def score_response(
     # ── 8. Clamp ─────────────────────────────────────────────
     score = max(0, min(score, max_pts))
 
-    # ── 9. Fingerprint ───────────────────────────────────────
-    fp = _make_fingerprint(
-        rubric_name=rubric.name,
-        rubric_version=rubric.version,
-        match_ref=match_ref,
-        match_hyp=match_hyp,
-        ref_tokens=ref_tokens,
-        hyp_tokens=hyp_tokens,
-        alignment=alignment,
-        applied_rules=applied_rules,
-        score=score,
-    )
-
-    # ── 10. Build trace + result ──────────────────────────────
+    # ── 9. Build trace + result ───────────────────────────────
     trace = ScoringTrace(
         display_ref=display_ref,
         display_hyp=display_hyp,
@@ -249,7 +197,6 @@ def score_response(
         applied_rule_ids=applied_rules,
         score=score,
         max_points=max_pts,
-        deterministic_fingerprint=fp,
     )
 
     # Adjudicate human scores if both available
