@@ -1,0 +1,31 @@
+Sentence,Stimulus,Transcription,Score,Rule,Edits,Overlap,Similarity
+1,Quiero cortarme el pelo,Quiero cortarme mi pelo,3,R3_minor,1,0.8,0.558
+2,El libro está en la mesa,El libro [pause] está en la mesa,4,R4_perfect,0,1.0,0.567
+3,El carro lo tiene Pedro,E-[gibberish] perro,0,R0_other,5,0.0,0.552
+4,El se ducha cada mañana,El se lucha cada mañana,2,R2_moderate,1,0.8,0.556
+5,¿Qué dice usted que va a hacer hoy?,¿Qué [gibberish] que vas estoy?,1,R1_heavy_but_some_overlap,6,0.25,0.552
+6,Dudo que sepa manejar muy bien,Dudo que sepa ma-mastar tan bien (tambien?),2,R2b_low_overlap_few_edits,2,0.667,0.55
+7,Las calles de esta ciudad son muy anchas,Las calles..es-[gibberish]...,1,R1_heavy_but_some_overlap,6,0.333,0.552
+8,Puede que llueva mañana todo el día,Puede xxx mañana de todo día,2,R2_moderate,4,0.571,0.55
+9,Las casas son muy bonitas pero caras,A las casa es mu-son bonitas,1,R1_heavy_but_some_overlap,6,0.429,0.552
+10,Me gustan las películas que acaban bien,Me gusta las películas que x bien,2,R2b_low_overlap_few_edits,2,0.714,0.552
+11,El chico con el que yo salgo es español,El chico con es el algo (xxx?) es español,2,R2_moderate,4,0.625,0.55
+12,Después de cenar me fui a dormir tranquilo,Después de fenar mi fui a tranquilo,2,R2_moderate,3,0.667,0.551
+13,Quiero una casa en la que vivan mis animales,Quienen que en el casa ...muchos animales,1,R1_heavy_but_some_overlap,7,0.5,0.55
+14,A nosotros nos fascinan las fiestas grandiosas,A nosotros fanimos [pause] fiestas grandiosas,2,R2_moderate,3,0.625,0.55
+15,Ella sólo bebe cerveza y no come nada,Ella bebidas cerviamos y no comidas,1,R1_heavy_but_some_overlap,5,0.375,0.552
+16,Me gustaría que el precio de las casas bajara,Me gustaría ser..ella...mhh..,0,R0_other,7,0.222,0.552
+17,Cruza a la derecha y después sigue todo recto,Cruze a la derecha de siguelo,1,R1_heavy_but_some_overlap,5,0.444,0.55
+18,Ella ha terminado de pintar su apartamento,Ella terminado pintar a sus apartmento,1,R1_heavy_but_some_overlap,5,0.429,0.551
+19,Me gustaría que empezara a hacer más calor pronto,Me gustaría se..[pause] xxx pronto,1,R1_heavy_but_some_overlap,6,0.333,0.552
+20,El niño al que se le murió el gato está triste,El niño se murió el gato es muy triste,1,R1_heavy_but_some_overlap,6,0.636,0.55
+21,Una amiga mía cuida a los niños de mi vecino,Una mía amiga cuidado a sus niños,1,R1_heavy_but_some_overlap,7,0.545,0.549
+22,El gato que era negro fue perseguido por el perro,El gato-el gato quien era el nego de perro,1,R1_heavy_but_some_overlap,8,0.444,0.55
+23,Antes de poder salir él tiene que limpiar su cuarto,Antes de podai e salir..[pause] antes de xxx,1,R1_heavy_but_some_overlap,8,0.3,0.552
+24,La cantidad de personas que fuman ha disminuido,A la cantan... [pause] muy a xxx,0,R0_other,8,0.125,0.552
+25,Después de llegar a casa del trabajo tomé la cena,Después de llegar [pause] al trabajo...,1,R1_heavy_but_some_overlap,5,0.6,0.55
+26,El ladrón al que atrapó la policía era famoso,X- ladróna(?)de policio que es famoso,0,R0_other,8,0.222,0.552
+27,Le pedí a un amigo que me ayudara con la tarea,Que ped-x una amigo [pause] a su tarea,1,R1_heavy_but_some_overlap,9,0.364,0.552
+28,El examen no fue tan difícil como me habían dicho,El examen no difícil.. [pause]... [gibberish],1,R1_heavy_but_some_overlap,6,0.4,0.55
+29,¿Serías tan amable de darme el libro que está en la mesa?,El libro que está en la mesa,1,R1_heavy_but_some_overlap,7,0.5,0.549
+30,Hay mucha gente que no toma nada para el desayuno,A mucha gente xxx...,1,R1_heavy_but_some_overlap,8,0.273,0.552
