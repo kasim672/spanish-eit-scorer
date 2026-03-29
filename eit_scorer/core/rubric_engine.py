@@ -51,44 +51,36 @@ class RubricEngine:
         """
         Check if all conditions are satisfied by features.
         
-        Condition format:
-            "max_field": value  → field <= value
-            "min_field": value  → field >= value
-            "is_field": value   → field == value
-            "field_op": value   → field op value (where op is eq, ne, lt, le, gt, ge)
+        Explicit threshold format:
+            "field": value  → field >= value (for numeric fields, default)
+            "is_field": value → field == value (for boolean fields)
+            "field_eq": value → field == value (for exact equality)
+        
+        This ensures clear, readable rule definitions aligned with Ortega (2000).
         """
-        for key, expected_value in conditions.items():
-            # Check for explicit operator suffix (eq, ne, lt, le, gt, ge)
-            parts = key.rsplit("_", 1)
-            op_str = parts[-1] if len(parts) > 1 and parts[-1] in {"eq", "ne", "lt", "le", "gt", "ge"} else None
-            
-            if op_str:
-                # Explicit operator: "field_op"
-                field = "_".join(parts[:-1])
-                op = self._get_operator(op_str)
+        for key, threshold in conditions.items():
+            # Boolean fields (is_*)
+            if key.startswith("is_"):
+                actual_value = features.get(key)
+                if actual_value is None:
+                    return False
+                if actual_value != threshold:
+                    return False
+            # Exact equality (field_eq) - strip _eq suffix to get actual field name
+            elif key.endswith("_eq"):
+                field_name = key[:-3]  # Remove "_eq" suffix
+                actual_value = features.get(field_name)
+                if actual_value is None:
+                    return False
+                if actual_value != threshold:
+                    return False
+            # Numeric fields: use >= comparison (threshold is minimum)
             else:
-                # Implicit operator based on prefix
-                field = key
-                if key.startswith("max_"):
-                    field = key[4:]  # Remove "max_" prefix
-                    op = lambda a, b: a <= b
-                elif key.startswith("min_"):
-                    field = key[4:]  # Remove "min_" prefix
-                    op = lambda a, b: a >= b
-                elif key.startswith("is_"):
-                    field = key[3:]  # Remove "is_" prefix
-                    op = lambda a, b: a == b
-                else:
-                    op = lambda a, b: a == b
-            
-            # Get actual value from features
-            actual_value = features.get(field)
-            if actual_value is None:
-                return False
-            
-            # Check condition
-            if not op(actual_value, expected_value):
-                return False
+                actual_value = features.get(key)
+                if actual_value is None:
+                    return False
+                if actual_value < threshold:
+                    return False
         
         return True
     
@@ -108,115 +100,118 @@ class RubricEngine:
 
 def create_ortega_2000_engine() -> RubricEngine:
     """
-    Create the default Ortega (2000) EIT scoring engine.
+    Create the explicit Ortega (2000) EIT scoring engine.
     
-    Scoring scale:
-    - 0: No meaningful output, garbled, minimal repetition
-    - 1: Less than half idea units, incomplete meaning
-    - 2: More than half idea units, inexact meaning
-    - 3: Meaning preserved, grammatical errors acceptable
-    - 4: Exact repetition
+    Scoring scale (based on idea_unit_coverage + meaning preservation):
+    - 4: Exact repetition (0 edits)
+    - 3: Meaning preserved (≥90% coverage, no content subs, ≤3 edits)
+    - 2: Partial meaning (≥50% coverage, ≤2 content subs)
+    - 1: Minimal meaning (>0% coverage, ≥2 tokens)
+    - 0: No meaning or gibberish
+    
+    Word-order penalties are applied only when meaning is affected.
+    Synonym handling is strictly rule-based (no ML/probabilistic methods).
     """
     rules = [
-        # Score 0: Gibberish
+        # ─────────────────────────────────────────────────────────
+        # SCORE 4: EXACT REPETITION
+        # ─────────────────────────────────────────────────────────
+        RubricRule(
+            rule_id="R4_exact_repetition",
+            description="Exact match: 0 edits, 100% coverage",
+            conditions={"total_edits_eq": 0},  # Exact equality
+            score=4,
+        ),
+        
+        # ─────────────────────────────────────────────────────────
+        # SCORE 3: MEANING PRESERVED
+        # ─────────────────────────────────────────────────────────
+        # High coverage (≥90%), no content substitutions, minor edits
+        RubricRule(
+            rule_id="R3_meaning_preserved_high_coverage",
+            description="Meaning fully preserved: ≥90% coverage, no content subs, ≤3 edits",
+            conditions={
+                "idea_unit_coverage": 0.90,
+                "content_subs": 0,
+                "total_edits": 3,
+            },
+            score=3,
+        ),
+        
+        # Good coverage (≥80%), no content subs, minimal edits
+        RubricRule(
+            rule_id="R3_meaning_preserved_good_coverage",
+            description="Meaning preserved: ≥80% coverage, no content subs, ≤2 edits",
+            conditions={
+                "idea_unit_coverage": 0.80,
+                "content_subs": 0,
+                "total_edits": 2,
+            },
+            score=3,
+        ),
+        
+        # ─────────────────────────────────────────────────────────
+        # SCORE 2: PARTIAL MEANING (>50% COVERAGE)
+        # ─────────────────────────────────────────────────────────
+        # More than half idea units, some content loss acceptable
+        RubricRule(
+            rule_id="R2_partial_meaning_high",
+            description="Partial meaning: ≥60% coverage, ≤2 content subs",
+            conditions={
+                "idea_unit_coverage": 0.60,
+                "content_subs": 2,
+            },
+            score=2,
+        ),
+        
+        # Moderate coverage (≥50%), limited content loss
+        RubricRule(
+            rule_id="R2_partial_meaning_moderate",
+            description="Partial meaning: ≥50% coverage, ≤3 content subs",
+            conditions={
+                "idea_unit_coverage": 0.50,
+                "content_subs": 3,
+            },
+            score=2,
+        ),
+        
+        # ─────────────────────────────────────────────────────────
+        # SCORE 1: MINIMAL MEANING (<50% COVERAGE)
+        # ─────────────────────────────────────────────────────────
+        # Some recognizable content but incomplete
+        RubricRule(
+            rule_id="R1_minimal_meaning",
+            description="Minimal meaning: >0% coverage, ≥2 tokens, <50% coverage",
+            conditions={
+                "idea_unit_coverage": 0.01,  # Greater than 0
+                "hyp_min_tokens": 2,
+            },
+            score=1,
+        ),
+        
+        # ─────────────────────────────────────────────────────────
+        # SCORE 0: NO MEANING / GIBBERISH
+        # ─────────────────────────────────────────────────────────
+        # Gibberish response (all noise)
         RubricRule(
             rule_id="R0_gibberish",
-            description="Response is transcription noise",
+            description="Response is transcription noise (all gibberish)",
             conditions={"is_gibberish": True},
             score=0,
         ),
         
-        # Score 0: Empty or too short
+        # Empty or too short response
         RubricRule(
-            rule_id="R0_empty_or_too_short",
+            rule_id="R0_empty_response",
             description="Response has fewer than 2 tokens",
-            conditions={"hyp_min_tokens_lt": 2},
+            conditions={"hyp_min_tokens": 1},
             score=0,
         ),
         
-        # Score 4: Perfect repetition
+        # No coverage (fallback)
         RubricRule(
-            rule_id="R4_perfect",
-            description="No edits — exact repetition",
-            conditions={"max_total_edits": 0},
-            score=4,
-        ),
-        
-        # Score 3: Meaning preserved
-        RubricRule(
-            rule_id="R3_meaning_preserved",
-            description="Meaning fully preserved, minor form errors",
-            conditions={
-                "max_total_edits": 3,
-                "max_content_subs": 0,
-                "min_idea_unit_coverage": 0.80,
-            },
-            score=3,
-        ),
-        
-        # Score 3: Reordered but complete
-        RubricRule(
-            rule_id="R3_reordered_complete",
-            description="Content complete but reordered",
-            conditions={
-                "min_idea_unit_coverage": 0.90,
-                "max_content_subs": 0,
-                "max_word_order_penalty": 0.50,
-            },
-            score=3,
-        ),
-        
-        # Score 2: More than half idea units
-        RubricRule(
-            rule_id="R2_more_than_half_iu",
-            description="More than half idea units reproduced",
-            conditions={
-                "min_idea_unit_coverage": 0.50,
-                "max_content_subs": 2,
-                "min_length_ratio": 0.40,
-            },
-            score=2,
-        ),
-        
-        # Score 2: Good overlap but some loss
-        RubricRule(
-            rule_id="R2_good_overlap_some_loss",
-            description="Good token overlap but content loss",
-            conditions={
-                "min_token_overlap_ratio": 0.55,
-                "max_content_subs": 2,
-                "min_length_ratio": 0.35,
-            },
-            score=2,
-        ),
-        
-        # Score 1: Less than half idea units
-        RubricRule(
-            rule_id="R1_less_than_half_iu",
-            description="Less than half idea units reproduced",
-            conditions={
-                "min_idea_unit_coverage": 0.15,
-                "min_content_overlap": 0.15,
-                "hyp_min_tokens_ge": 2,
-            },
-            score=1,
-        ),
-        
-        # Score 1: Some overlap but short
-        RubricRule(
-            rule_id="R1_some_overlap_short",
-            description="Some recognizable content but incomplete",
-            conditions={
-                "min_token_overlap_ratio": 0.20,
-                "hyp_min_tokens_ge": 2,
-            },
-            score=1,
-        ),
-        
-        # Score 0: Catchall
-        RubricRule(
-            rule_id="R0_other",
-            description="No prior rule matched",
+            rule_id="R0_no_coverage",
+            description="No meaningful content reproduced",
             conditions={},
             score=0,
         ),

@@ -1,0 +1,13 @@
+{
+  "n_samples": 10,
+  "accuracy": 90.0,
+  "cohens_kappa": 0.851,
+  "weighted_kappa": 0.952,
+  "mae": 0.1,
+  "interpretation": {
+    "accuracy": "Excellent (\u226590%)",
+    "kappa": "Almost perfect agreement",
+    "weighted_kappa": "Almost perfect agreement",
+    "mae": "Excellent (0.10, 2.5% of scale)"
+  }
+}

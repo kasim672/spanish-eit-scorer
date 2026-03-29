@@ -2,21 +2,29 @@
 """
 score_excel.py
 ===============
-Score EIT responses from Excel file.
+Score EIT responses from Excel file with evaluation metrics.
 
 Usage:
     python score_excel.py <input.xlsx> <output.xlsx>
 
-Reads all sheets (except 'Info'), scores each row, and writes results.
+Reads all sheets (except 'Info'), scores each row, computes agreement metrics
+if human scores are available, and writes results.
 """
 
 import sys
+import json
 from pathlib import Path
 
 from eit_scorer.core.rubric import load_rubric
 from eit_scorer.core.scoring import score_response
 from eit_scorer.data.models import EITItem, EITResponse
 from eit_scorer.utils.excel_io import read_excel_sheets, write_excel_scores
+from eit_scorer.evaluation.agreement import (
+    evaluate_agreement,
+    interpret_accuracy,
+    interpret_kappa,
+    interpret_mae,
+)
 
 
 def main():
@@ -45,6 +53,10 @@ def main():
     scores_by_sheet: dict[str, list[int]] = {}
     total_scored = 0
     
+    # For evaluation (if human scores available)
+    all_human_scores = []
+    all_auto_scores = []
+    
     for sheet_name, rows in sheets_data.items():
         print(f"\nProcessing sheet: {sheet_name} ({len(rows)} rows)")
         scores = []
@@ -66,6 +78,12 @@ def main():
             try:
                 scored = score_response(item, resp, rubric)
                 scores.append(scored.score)
+                all_auto_scores.append(scored.score)
+                
+                # Extract human score if available
+                if row.score is not None:
+                    all_human_scores.append(int(row.score))
+                
                 total_scored += 1
                 
                 if (i + 1) % 100 == 0:
@@ -82,7 +100,42 @@ def main():
     write_excel_scores(input_path, output_path, scores_by_sheet)
     print(f"Successfully scored {total_scored} responses")
     print(f"Output saved to: {output_path}")
+    
+    # Evaluate agreement if human scores are available
+    if all_human_scores and all_auto_scores:
+        print("\n" + "="*60)
+        print("EVALUATION METRICS")
+        print("="*60)
+        metrics = evaluate_agreement(all_human_scores, all_auto_scores)
+        print(metrics.detailed_report())
+        
+        # Save metrics to JSON
+        results_dir = Path("results")
+        results_dir.mkdir(exist_ok=True)
+        
+        metrics_path = results_dir / "summary_metrics.json"
+        metrics_dict = {
+            "n_samples": metrics.n_samples,
+            "accuracy": round(metrics.accuracy, 2),
+            "cohens_kappa": round(metrics.cohens_kappa, 3),
+            "weighted_kappa": round(metrics.weighted_kappa, 3),
+            "mae": round(metrics.mae, 3),
+            "interpretation": {
+                "accuracy": interpret_accuracy(metrics.accuracy),
+                "kappa": interpret_kappa(metrics.cohens_kappa),
+                "weighted_kappa": interpret_kappa(metrics.weighted_kappa),
+                "mae": interpret_mae(metrics.mae),
+            }
+        }
+        
+        with open(metrics_path, "w") as f:
+            json.dump(metrics_dict, f, indent=2)
+        
+        print(f"\n✅ Evaluation metrics saved to: {metrics_path}")
+    else:
+        print("\nNote: No human scores available for evaluation")
 
 
 if __name__ == "__main__":
     main()
+
