@@ -63,7 +63,7 @@
                          │
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                  OUTPUT: ScoredSentence                      │
+│                  OUTPUT: ScoredSentence                     │
 │  • score (0–4)                                              │
 │  • max_points (4)                                           │
 │  • trace (detailed scoring information)                     │
