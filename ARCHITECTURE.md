@@ -355,36 +355,21 @@ class ScoringTrace:
 - Detailed documentation and examples
 
 ## Removed Components
-
-### ❌ spaCy NLP Pipeline
-**Why removed**:
-- Introduced non-determinism (different versions produce different results)
-- Unnecessary complexity for EIT scoring
-- POS tagging not needed (we use function-word list instead)
-- Dependency parsing not needed (we use LCS-based word order penalty)
-
-**Replacement**:
-- Function-word list (deterministic, configurable)
-- LCS-based word-order penalty (deterministic, efficient)
-
 ### ❌ Neural Similarity Network
 **Why removed**:
 - Introduced non-determinism (learned parameters)
 - Difficult to interpret (black box)
 - Overkill for EIT scoring (simple overlap metrics sufficient)
 - Difficult to reproduce (requires specific model weights)
-
 **Replacement**:
 - Multiset-based token overlap (deterministic, interpretable)
 - Content-word-only overlap (deterministic, interpretable)
 - Idea-unit coverage (deterministic, interpretable)
-
 ### ❌ Probabilistic Features
 **Why removed**:
 - Introduced non-determinism
 - Difficult to interpret
 - Not needed for rule-based scoring
-
 **Replacement**:
 - Deterministic features (overlap, coverage, reordering)
 - All features are human-understandable
