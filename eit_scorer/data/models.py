@@ -90,10 +90,17 @@ class ScoringTrace(BaseModel):
     alignment_cost: float
 
     # Error counts
-    error_counts: dict[str, int]   # keys: match, sub, ins, del, function_sub, content_sub
+    error_counts: dict[str, int]   # keys: match, sub, ins, del, function_sub, content_sub, near_synonym_sub
     total_edits:  int
     content_subs: int
     overlap_ratio: float
+
+    # Enriched meaning features (Ortega 2000 / Faretta-Stutenberg 2023)
+    content_overlap:    float = Field(0.0, description="Overlap restricted to content words")
+    idea_unit_coverage: float = Field(0.0, description="Proportion of ref content tokens reproduced")
+    word_order_penalty: float = Field(0.0, description="0=perfect order, 1=fully reordered")
+    is_gibberish:       bool  = Field(False, description="True if response is transcription noise")
+    near_synonym_subs:  int   = Field(0, description="Substitutions that are morphological/lexical near-synonyms")
 
     # Rule application
     applied_rule_ids: list[str]    # Rules that fired (first match wins)
@@ -103,12 +110,12 @@ class ScoringTrace(BaseModel):
     def audit(self) -> list[str]:
         """Return human-readable audit trail lines."""
         lines = [
-            f"REF (display):  {self.display_ref}",
-            f"HYP (display):  {self.display_hyp}",
-            f"REF (match):    {self.match_ref}",
-            f"HYP (match):    {self.match_hyp}",
-            f"REF tokens:     {self.ref_tokens}",
-            f"HYP tokens:     {self.hyp_tokens}",
+            f"REF (display):       {self.display_ref}",
+            f"HYP (display):       {self.display_hyp}",
+            f"REF (match):         {self.match_ref}",
+            f"HYP (match):         {self.match_hyp}",
+            f"REF tokens:          {self.ref_tokens}",
+            f"HYP tokens:          {self.hyp_tokens}",
             "ALIGNMENT:",
         ]
         for op in self.alignment:
@@ -116,12 +123,17 @@ class ScoringTrace(BaseModel):
             hyp = op.hyp_token or "—"
             lines.append(f"  [{op.op:5s}]  ref='{ref}'  hyp='{hyp}'")
         lines += [
-            f"ERRORS:         {self.error_counts}",
-            f"TOTAL EDITS:    {self.total_edits}",
-            f"CONTENT SUBS:   {self.content_subs}",
-            f"OVERLAP RATIO:  {self.overlap_ratio:.3f}",
-            f"RULE(S) FIRED:  {self.applied_rule_ids}",
-            f"SCORE:          {self.score} / {self.max_points}",
+            f"ERRORS:              {self.error_counts}",
+            f"TOTAL EDITS:         {self.total_edits}",
+            f"CONTENT SUBS:        {self.content_subs}",
+            f"NEAR-SYNONYM SUBS:   {self.near_synonym_subs}",
+            f"OVERLAP RATIO:       {self.overlap_ratio:.3f}",
+            f"CONTENT OVERLAP:     {self.content_overlap:.3f}",
+            f"IDEA UNIT COVERAGE:  {self.idea_unit_coverage:.3f}",
+            f"WORD ORDER PENALTY:  {self.word_order_penalty:.3f}",
+            f"GIBBERISH:           {self.is_gibberish}",
+            f"RULE(S) FIRED:       {self.applied_rule_ids}",
+            f"SCORE:               {self.score} / {self.max_points}",
         ]
         return lines
 

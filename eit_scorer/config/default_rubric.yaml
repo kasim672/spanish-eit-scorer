@@ -1,35 +1,46 @@
 # ============================================================
-# Spanish EIT Default Rubric  —  Version 1.0
+# Spanish EIT Default Rubric  —  Version 2.0
 # ============================================================
-# This file is the SINGLE SOURCE OF TRUTH for all scoring logic.
+# Aligned with Ortega (2000) and Faretta-Stutenberg et al. (2023).
+#
 # Rules are applied in order; the FIRST matching rule wins.
 # Do NOT hardcode scoring values in Python — always change here.
+#
+# Available condition fields:
+#   max_edits                : total_edits <= N
+#   max_content_subs         : content_subs <= N  (near-synonyms excluded)
+#   min_token_overlap_ratio  : overlap_ratio >= X  (multiset-based)
+#   min_content_overlap      : content_overlap >= X  (content words only)
+#   min_idea_unit_coverage   : idea_unit_coverage >= X  (Ortega 2000 proxy)
+#   max_word_order_penalty   : word_order_penalty <= X  (0=perfect, 1=reordered)
+#   min_length_ratio         : length_ratio >= X  (hyp_len / ref_len)
+#   hyp_min_tokens           : len(hyp_tokens) >= N
+#   is_gibberish             : true/false
+#   Parametric: {field}_{op}: value  where op in {eq,ne,lt,le,gt,ge}
 # ============================================================
 
 rubric:
   name:    "Spanish EIT Default Rubric"
-  version: "1.0"
+  version: "2.0"
 
   # ── Scale ──────────────────────────────────────────────────
   scale:
     max_points_per_item: 4   # 0–4 per sentence
 
   # ── Rules ──────────────────────────────────────────────────
-  # Conditions (all must hold — logical AND):
-  #   max_edits              : total_edits <= N
-  #   max_content_subs       : content_subs <= N
-  #   min_token_overlap_ratio: overlap_ratio >= X (0.0–1.0)
-  #   hyp_min_tokens         : len(hyp_tokens) >= N
-  #   hyp_min_tokens_lt      : len(hyp_tokens) < N  (operator suffix)
-  #
-  # Parametric operators: _eq _ne _lt _le _gt _ge
-  # Examples:
-  #   total_edits_le: 2   → total_edits <= 2
-  #   content_subs_gt: 1  → content_subs > 1
-
   rules:
 
-    # ── R0: Empty or too short ─────────────────────────────
+    # ── R0a: Gibberish ─────────────────────────────────────
+    # Catches [gibberish], XXX, noise-only responses before any
+    # alignment features are considered.
+    - id:          R0_gibberish
+      description: "Response is transcription noise ([gibberish], XXX, etc.)"
+      when:
+        is_gibberish: true
+      then:
+        score: 0
+
+    # ── R0b: Empty or too short ────────────────────────────
     - id:          R0_empty_or_too_short
       description: "Response is empty or has fewer than 2 tokens — no meaningful production"
       when:
@@ -37,7 +48,8 @@ rubric:
       then:
         score: 0
 
-    # ── R4: Perfect ────────────────────────────────────────
+    # ── R4: Exact repetition ───────────────────────────────
+    # Ortega (2000): Score 4 = exact repetition of the stimulus.
     - id:          R4_perfect
       description: "No edits — response matches target exactly after normalization"
       when:
@@ -45,194 +57,79 @@ rubric:
       then:
         score: 4
 
-    # ── R3: Minor ──────────────────────────────────────────
-    - id:          R3_minor
-      description: "1–2 edits, no content word substitutions — minor function word / morpho errors only"
+    # ── R3a: Meaning fully preserved, minor form errors ────
+    # Ortega (2000): Score 3 = meaning fully preserved even with
+    # grammatical errors. Near-synonym substitutions (morphological
+    # variants, tense shifts) do NOT count as content_subs here.
+    - id:          R3_meaning_preserved
+      description: "Meaning fully preserved: high IU coverage, no content subs, minor edits only"
       when:
-        max_edits:        2
-        max_content_subs: 0
+        max_edits:              3
+        max_content_subs:       0
+        min_idea_unit_coverage: 0.80
       then:
         score: 3
 
-    # ── R3b: Good overlap, only minor substitutions ────────
-    - id:          R3b_minor_with_function_sub
-      description: "Up to 2 edits including one function sub, high overlap"
+    # ── R3b: Reordered but complete ────────────────────────
+    # Word-order variation with full content coverage should not
+    # be penalized to score 2 — meaning is preserved per Ortega.
+    - id:          R3_reordered_complete
+      description: "Content fully present but reordered — meaning preserved despite word order change"
       when:
-        max_edits:               2
-        max_content_subs:        0
-        min_token_overlap_ratio: 0.75
+        min_idea_unit_coverage: 0.90
+        max_content_subs:       0
+        max_word_order_penalty: 0.50
       then:
         score: 3
 
-    # ── R2: Moderate ───────────────────────────────────────
-    - id:          R2_moderate
-      description: "3–4 edits OR up to 1 content sub — partial production, still recognizable"
+    # ── R2a: More than half idea units, meaning inexact ────
+    # Ortega (2000): Score 2 = more than half idea units reproduced
+    # but meaning is inexact or ambiguous.
+    - id:          R2_more_than_half_iu
+      description: "More than half idea units reproduced; meaning partially preserved"
       when:
-        max_edits:               4
-        max_content_subs:        1
-        min_token_overlap_ratio: 0.50
+        min_idea_unit_coverage: 0.50
+        max_content_subs:       2
+        min_length_ratio:       0.40
       then:
         score: 2
 
-    # ── R2b: Fewer edits but poor overlap ──────────────────
-    - id:          R2b_low_overlap_few_edits
-      description: "3 edits but overlap drops — still partial credit"
+    # ── R2b: Good token overlap but some content loss ──────
+    - id:          R2_good_overlap_some_loss
+      description: "Good overall overlap but content substitutions reduce meaning fidelity"
       when:
-        max_edits:               3
-        min_token_overlap_ratio: 0.40
+        min_token_overlap_ratio: 0.55
+        max_content_subs:        2
+        min_length_ratio:        0.35
       then:
         score: 2
 
-    # ── R1: Heavy errors but some overlap ──────────────────
-    - id:          R1_heavy_but_some_overlap
-      description: "5+ edits or multiple content subs, but learner produced something recognizable"
+    # ── R1: Less than half idea units ──────────────────────
+    # Ortega (2000): Score 1 = less than half idea units, incomplete
+    # or unrelated meaning.
+    - id:          R1_less_than_half_iu
+      description: "Less than half idea units reproduced — incomplete or unrelated meaning"
       when:
-        min_token_overlap_ratio: 0.25
+        min_idea_unit_coverage: 0.15
+        min_content_overlap:    0.15
+        hyp_min_tokens:         2
+      then:
+        score: 1
+
+    # ── R1b: Some token overlap but very short ─────────────
+    - id:          R1_some_overlap_short
+      description: "Some recognizable content but very incomplete production"
+      when:
+        min_token_overlap_ratio: 0.20
         hyp_min_tokens:          2
       then:
         score: 1
 
     # ── R0: Catchall ───────────────────────────────────────
+    # Ortega (2000): Score 0 = no meaningful output, garbled,
+    # or minimal repetition.
     - id:          R0_other
       description: "No prior rule matched — insufficient production or completely wrong"
       when: {}
       then:
         score: 0
-
-  # ── Text Processing Configuration ──────────────────────────
-  normalization:
-    lowercase:                    true
-    strip_punctuation:            true
-    normalize_whitespace:         true
-    fold_diacritics_for_matching: false   # Keep á, ñ, etc. — meaningful in Spanish
-    expand_contractions:          true
-    strip_filler_words:           true
-    filler_words:
-      - "eh"
-      - "um"
-      - "uh"
-      - "este"
-      - "mm"
-      - "mhm"
-      - "hmm"
-      - "ah"
-      - "eeh"
-      - "mmm"
-    contraction_map:
-      del: ["de", "el"]
-      al:  ["a",  "el"]
-
-  tokenization:
-    split_on_whitespace: true
-    keep_apostrophes:    false
-    split_enclitics:     true
-    enclitics:
-      - "selos"
-      - "selas"
-      - "melos"
-      - "melas"
-      - "telos"
-      - "telas"
-      - "noslos"
-      - "noslas"
-      - "selo"
-      - "sela"
-      - "melo"
-      - "mela"
-      - "telo"
-      - "tela"
-      - "nos"
-      - "los"
-      - "las"
-      - "les"
-      - "me"
-      - "te"
-      - "se"
-      - "lo"
-      - "la"
-      - "le"
-      - "os"
-
-  alignment:
-    match_score:       2.0
-    mismatch_penalty: -1.0
-    gap_penalty:      -1.0
-
-  error_labeling:
-    function_words:
-      # Articles
-      - el
-      - la
-      - los
-      - las
-      - un
-      - una
-      - unos
-      - unas
-      # Prepositions
-      - a
-      - de
-      - en
-      - con
-      - por
-      - para
-      - sin
-      - sobre
-      - entre
-      - hasta
-      - desde
-      - hacia
-      - durante
-      # Conjunctions
-      - que
-      - y
-      - e
-      - o
-      - u
-      - pero
-      - sino
-      - si
-      - aunque
-      - cuando
-      - donde
-      - como
-      - porque
-      - mientras
-      - después
-      - antes
-      # Clitics & weak pronouns
-      - me
-      - te
-      - se
-      - lo
-      - la
-      - le
-      - nos
-      - os
-      - los
-      - las
-      - les
-      # Demonstratives
-      - este
-      - ese
-      - aquel
-      - esta
-      - esa
-      - aquella
-      - estos
-      - esos
-      - estas
-      - esas
-      # Auxiliaries
-      - ha
-      - han
-      - he
-      - has
-      - había
-      - habían
-      - ser
-      - estar
-      - haber
-      # Contractions (pre-expansion)
-      - del
-      - al
