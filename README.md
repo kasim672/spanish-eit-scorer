@@ -399,11 +399,13 @@ spanish_eit_scorer/
 │   ├── demo_evaluation.py         # Evaluation demo
 │   └── databuilder.py             # Synthetic data generation
 ├── tests/                         # Test suite (108 tests)
-├── docs/                          # Technical documentation
+├── docs/                     # Technical documentation
 │   ├── architecture.md            # System design
 │   ├── scoring_logic.md           # Scoring methodology
 │   ├── evaluation.md              # Evaluation metrics
 │   └── rubric_format.md           # Rubric file format
+│   └── images/
+│       └── api_demo.png           # Live Scoring Demo
 ├── results/                       # Output directory
 │   └── summary_metrics.json       # Evaluation metrics
 ├── README.md                      # This file
