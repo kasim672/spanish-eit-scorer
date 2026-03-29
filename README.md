@@ -361,7 +361,14 @@ FastAPI-based REST interface for real-time scoring:
 - JSON-based batch scoring
 - Production-ready deployment support
 - Same deterministic pipeline as CLI
+## 🚀 FastAPI Interface (Live Scoring Demo)
 
+The system provides a real-time API interface for scoring responses.
+Below is an example of JSON input and deterministic scoring output with full audit trace:
+![FastAPI Demo](docs/images/api_demo.png)
+- Left: JSON payload with reference sentence and learner responses  
+- Right: Deterministic scoring output with rule fired, edits, overlap, and full audit trail  
+- Same input always produces identical output (no randomness)
 ---
 
 ## Project Structure
