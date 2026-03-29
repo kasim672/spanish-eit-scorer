@@ -117,7 +117,7 @@ Input Response
     ↓
 5. Feature Extraction (10 deterministic features)
     ↓
-6. Rubric Engine (11 explicit rules, first-match-wins)
+6. Rubric Engine (9 explicit rules, first-match-wins)
     ↓
 Output: Score (0–4) + Complete Audit Trail
 ```
@@ -137,7 +137,7 @@ Output: Score (0–4) + Complete Audit Trail
 
 ### Rubric Rules
 
-11 explicit rules evaluated in order (first-match-wins):
+9 explicit rules evaluated in order (first-match-wins):
 
 1. **R4_exact_repetition**: `total_edits == 0` → Score 4
 2. **R3_meaning_preserved_high**: `coverage ≥ 0.90, content_subs == 0, edits ≤ 3` → Score 3
@@ -576,11 +576,6 @@ Contributions welcome! Please:
 4. Ensure all tests pass
 5. Submit a pull request
 
----
-
-## License
-
-MIT License - See LICENSE file for details
 
 ---
 
@@ -593,8 +588,5 @@ MIT License - See LICENSE file for details
 ---
 
 ## Status
-
-**Version**: 2.0  
-**Status**: ✅ **PRODUCTION-READY**  
 **Tests**: 108/108 passing (100%)  
 **Validation**: κ = 0.851 (almost perfect agreement)

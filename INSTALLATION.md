@@ -223,5 +223,3 @@ You're ready to use the Spanish EIT Scorer. Start with:
 ```bash
 python scripts/demo_evaluation.py
 ```
-
-**Status**: ✅ **READY TO USE**

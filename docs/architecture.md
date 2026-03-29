@@ -443,5 +443,4 @@ Where n = reference length, m = response length, r = number of rules
 
 ---
 
-**Last updated**: 2024-03-27
-**Status**: Complete
+
