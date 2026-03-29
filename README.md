@@ -15,7 +15,7 @@ The Spanish EIT Scorer is a production-ready system that automatically scores Sp
 ### Key Features
 
 - **Deterministic Scoring**: No randomness, same input always produces same score
-- **Explicit Rubric Engine**: 10 deterministic, YAML-defined rules aligned with Ortega (2000), ensuring transparent and reproducible scoring (first-match-wins)
+- **Explicit Rubric Engine**: 10 deterministic, YAML-defined rules aligned with Ortega (2000), ensuring transparent and reproducible scoring
 - **Research-Grade Validation**: Cohen's κ = 0.851 (almost perfect agreement)
 - **Complete Audit Trails**: Full traceability for every scoring decision
 - **Excel Integration**: Batch processing with automatic evaluation
