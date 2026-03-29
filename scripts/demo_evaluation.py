@@ -20,7 +20,7 @@ from pathlib import Path
 
 def main():
     # Load rubric
-    rubric_path = Path("eit_scorer/config/default_rubric.yaml")
+    rubric_path = Path(__file__).parent.parent / "eit_scorer/config/default_rubric.yaml"
     rubric = load_rubric(rubric_path)
     
     # Sample test cases with human scores

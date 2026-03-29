@@ -1,254 +1,236 @@
 # Installation Guide
 
-Complete setup instructions for the Spanish EIT Automated Scorer.
+Complete setup instructions for the Spanish EIT Scorer.
 
 ---
 
-## Requirements
+## Prerequisites
 
-- Python 3.9 or higher
-- pip
-- ~200 MB disk space (+ ~13–560 MB for spaCy model, depending on size)
+- **Python**: 3.11 or higher
+- **Operating System**: Linux, macOS, or Windows
+- **Git**: For cloning the repository
 
 ---
 
-## Step 1 — Get the code
+## Installation Steps
 
+### 1. Clone Repository
 ```bash
-git clone https://github.com/your-lab/spanish-eit-scorer
+git clone <repository-url>
 cd spanish_eit_scorer
 ```
 
-Or if you have the zip:
+### 2. Set Up Virtual Environment
 
+**Option A: Use Existing .venv (Recommended)**
 ```bash
-unzip spanish-eit-scorer.zip
-cd spanish_eit_scorer
+# Activate existing virtual environment
+source .venv/bin/activate  # Linux/macOS
+# OR
+.venv\Scripts\activate     # Windows
 ```
 
----
-
-## Step 2 — Create and activate a virtual environment
-
+**Option B: Create New Virtual Environment**
 ```bash
+# Create new virtual environment
 python -m venv .venv
-source .venv/bin/activate        # Linux / macOS
-# .venv\Scripts\activate         # Windows
+
+# Activate it
+source .venv/bin/activate  # Linux/macOS
+# OR
+.venv\Scripts\activate     # Windows
 ```
 
-You should see `(.venv)` in your prompt.
-
-> If the project already has a `.venv` folder (as distributed), just activate it:
-> ```bash
-> source .venv/bin/activate
-> ```
-
----
-
-## Step 3 — Install dependencies
-
-### Option A — Exact pinned versions (recommended for reproducibility)
-
+### 3. Install Dependencies
 ```bash
+# Install all required packages
 pip install -r requirements.lock.txt
 ```
 
-### Option B — Latest compatible versions
+**Core Dependencies**:
+- `pydantic` - Data validation
+- `openpyxl` - Excel I/O
+- `scikit-learn` - Cohen's Kappa (optional, has built-in fallback)
+- `pytest` - Testing framework
+
+### 4. Install spaCy Model (OPTIONAL)
+**Only required for DataBuilder feature**
 
 ```bash
-pip install -e ".[dev]"
-```
-
----
-
-## Step 4 — Install the package in editable mode
-
-```bash
-pip install -e .
-```
-
-This registers the `eit-score`, `eit-api`, and `eit-gen` CLI commands.
-
-> If you see `ModuleNotFoundError: No module named 'setuptools.backends'`,
-> your setuptools is outdated. The `pyproject.toml` already uses the
-> compatible `setuptools.build_meta` backend — just upgrade pip first:
-> ```bash
-> pip install --upgrade pip setuptools
-> pip install -e .
-> ```
-
----
-
-## Step 5 — Install a spaCy Spanish model
-
-The scorer uses spaCy for morphologically-aware error generation in the
-synthetic dataset pipeline. It falls back gracefully without a model,
-but installation is recommended for realistic outputs.
-
-```bash
-# Lightweight — 12 MB, fastest (good for testing)
 python -m spacy download es_core_news_sm
-
-# Recommended — 43 MB, good accuracy/speed balance
-python -m spacy download es_core_news_md
-
-# Highest accuracy — 560 MB (for production use)
-python -m spacy download es_core_news_lg
 ```
 
-The system auto-selects the best installed model: `lg > md > sm > rule-based fallback`.
+**Note**: The core scoring system does NOT require spaCy. This is only needed for the optional DataBuilder feature that generates synthetic datasets.
 
----
-
-## Step 6 — Install pytest (for running tests)
-
+### 5. Verify Installation
 ```bash
-pip install pytest pytest-cov
+# Run test suite (should see 108 passed)
+python -m pytest tests/ -q
+
+# Run quick demo
+python scripts/demo_evaluation.py
 ```
 
 ---
 
-## Step 7 — Verify everything works
+## Quick Validation
 
-Run this quick check:
-
+### Test the System
 ```bash
-python -c "
-from eit_scorer.core.rubric  import load_rubric
-from eit_scorer.core.scoring import score_response
-from eit_scorer.data.models  import EITItem, EITResponse
-
-rubric = load_rubric('eit_scorer/config/default_rubric.yaml')
-item   = EITItem(item_id='s01', reference='El niño come una manzana', max_points=4)
-resp   = EITResponse(participant_id='P001', item_id='s01', response_text='El niño come manzana')
-result = score_response(item, resp, rubric)
-print('Score:', result.score)
-print('Rule: ', result.trace.applied_rule_ids)
-print('OK ✓')
-"
-```
-
-Expected output:
-```
-Score: 2
-Rule:  ['R2_moderate']
-OK ✓
-```
-
-Then run the full test suite:
-
-```bash
+# 1. Run all tests
 python -m pytest tests/ -v
-```
 
-Expected: `28 passed`
+# Expected output: 108 passed in ~2.2s
 
----
+# 2. Score sample Excel file
+python scripts/score_excel.py "AutoEIT Sample Transcriptions for Scoring.xlsx" "AutoEIT Sample Transcriptions for ScoringOutput.xlsx"
 
-## Full pipeline walkthrough
+# Expected output: Successfully scored 120 responses
 
-Once installed, run the complete pipeline end-to-end:
-
-```bash
-# 1. Generate a synthetic dataset (100 participants × 60 items)
-eit-score synth --out data/synth --participants 100 --seed 42
-
-# 2. Score it
-eit-score score \
-  --items   data/synth/items.json \
-  --dataset data/synth/dataset.jsonl \
-  --out     data/synth/scored.jsonl
-
-# 3. Evaluate agreement vs simulated human raters
-eit-score eval \
-  --scored data/synth/scored.jsonl \
-  --human  adjudicated \
-  --group  band
-
-# 4. Start the web API
-eit-api --host 0.0.0.0 --port 8000
-# → open http://localhost:8000  (browser UI)
-# → open http://localhost:8000/docs  (Swagger / interactive API)
+# 3. View results
+cat results/summary_metrics.json
 ```
 
 ---
 
 ## Troubleshooting
 
-### `No module named 'setuptools.backends'`
-
-Your setuptools version is < 68. Fixed in `pyproject.toml` already.
-If it still occurs:
+### Issue: "ModuleNotFoundError: No module named 'eit_scorer'"
+**Solution**: Ensure you're in the project root directory and virtual environment is activated
 
 ```bash
-pip install --upgrade pip setuptools
-pip install -e .
+# Check current directory
+pwd  # Should show .../spanish_eit_scorer
+
+# Activate virtual environment
+source .venv/bin/activate
 ```
 
-### `No module named pytest`
-
-pytest is not installed in your active venv:
+### Issue: "No module named 'openpyxl'"
+**Solution**: Install dependencies
 
 ```bash
-pip install pytest pytest-cov
+pip install -r requirements.lock.txt
 ```
 
-### `No module named 'eit_scorer'`
-
-The package isn't installed yet. Run:
-
-```bash
-pip install -e .
-```
-
-### `FileNotFoundError: Rubric not found`
-
-You're running from the wrong directory. Always run commands from the
-project root (`spanish_eit_scorer/`), not from a subdirectory.
-
-### spaCy model not found
-
-The scorer falls back to rule-based errors automatically. To install:
+### Issue: "No module named 'spacy'"
+**Solution**: This is only needed for DataBuilder (optional feature)
 
 ```bash
+# If you need DataBuilder
+pip install spacy
 python -m spacy download es_core_news_sm
+
+# If you don't need DataBuilder
+# Skip this - core scoring works without spaCy
 ```
 
-### Port 8000 already in use
+### Issue: Tests fail
+**Solution**: Ensure all dependencies installed
 
 ```bash
-eit-api --port 8001
+# Reinstall dependencies
+pip install -r requirements.lock.txt
+
+# Run tests with verbose output
+python -m pytest tests/ -v --tb=short
 ```
 
 ---
 
-## Dependencies overview
+## Development Setup
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| pyyaml | ≥6.0 | Rubric YAML loading |
-| pydantic | ≥2.0 | Data models + validation |
-| numpy | ≥1.24 | Numerical operations |
-| pandas | ≥2.0 | Data handling |
-| scikit-learn | ≥1.3 | Cohen's κ metrics |
-| tqdm | ≥4.65 | Progress bars |
-| spacy | ≥3.5 | Spanish NLP (optional but recommended) |
-| fastapi | ≥0.100 | REST API server |
-| uvicorn | ≥0.22 | ASGI server |
-| python-multipart | ≥0.0.6 | File upload support |
+### Install Development Dependencies
+```bash
+# Install with development extras
+pip install -e ".[dev]"
 
-Full pinned versions: see [`requirements.lock.txt`](requirements.lock.txt)
+# Or install manually
+pip install pytest pytest-cov black mypy
+```
+
+### Run Tests with Coverage
+```bash
+python -m pytest tests/ --cov=eit_scorer --cov-report=html
+```
+
+### Code Formatting
+```bash
+# Format code
+black eit_scorer/ tests/ scripts/
+
+# Type checking
+mypy eit_scorer/
+```
 
 ---
 
-## Environment summary (tested configuration)
+## System Requirements
 
+### Minimum Requirements
+- **CPU**: Any modern processor
+- **RAM**: 512 MB
+- **Disk**: 100 MB
+- **Python**: 3.11+
+
+### Recommended Requirements
+- **CPU**: 2+ cores
+- **RAM**: 2 GB
+- **Disk**: 500 MB (with spaCy model)
+- **Python**: 3.11+
+
+---
+
+## Verification Checklist
+
+After installation, verify:
+
+- [ ] Virtual environment activated
+- [ ] Dependencies installed (`pip list | grep pydantic`)
+- [ ] Tests pass (`python -m pytest tests/ -q`)
+- [ ] Demo runs (`python scripts/demo_evaluation.py`)
+- [ ] Excel scoring works (`python scripts/score_excel.py ...`)
+- [ ] Results directory created (`ls results/`)
+
+---
+
+## Next Steps
+
+After successful installation:
+
+1. **Read**: [START_HERE.md](START_HERE.md) for quick overview
+2. **Try**: Run `python scripts/demo_evaluation.py`
+3. **Score**: Process your Excel file with `python scripts/score_excel.py`
+4. **Learn**: Read [docs/EVALUATION_QUICK_START.md](docs/EVALUATION_QUICK_START.md)
+5. **Explore**: Check [docs/FINAL_SYSTEM_REPORT.md](docs/FINAL_SYSTEM_REPORT.md)
+
+---
+
+## Support
+
+### Documentation
+- Quick start: [START_HERE.md](START_HERE.md)
+- Evaluation guide: [docs/EVALUATION_QUICK_START.md](docs/EVALUATION_QUICK_START.md)
+- Full documentation: [docs/](docs/)
+
+### Testing
+- Run tests: `python -m pytest tests/ -v`
+- View test list: `python -m pytest tests/ --co -q`
+- Run specific test: `python -m pytest tests/test_evaluation_agreement.py -v`
+
+### Issues
+- Check documentation in `docs/` folder
+- Review test files for examples
+- Open an issue on GitHub
+
+---
+
+## Installation Complete! 🎉
+
+You're ready to use the Spanish EIT Scorer. Start with:
+
+```bash
+python scripts/demo_evaluation.py
 ```
-Python        3.11.8
-spaCy         3.7.2
-es_core_news_sm  3.7.0
-pydantic      2.5.3
-fastapi       0.104.1
-scikit-learn  1.3.2
-OS            Linux (Ubuntu 24.04)
-```
+
+**Status**: ✅ **READY TO USE**

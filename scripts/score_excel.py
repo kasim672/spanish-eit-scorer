@@ -40,7 +40,7 @@ def main():
         sys.exit(1)
     
     # Load rubric
-    rubric_path = Path(__file__).parent / "eit_scorer/config/default_rubric.yaml"
+    rubric_path = Path(__file__).parent.parent / "eit_scorer/config/default_rubric.yaml"
     rubric = load_rubric(rubric_path)
     print(f"Loaded rubric: {rubric.summary()}")
     

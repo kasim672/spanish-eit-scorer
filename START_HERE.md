@@ -21,9 +21,17 @@ A **deterministic, rubric-based scoring system** for Spanish Elicited Imitation 
 
 ## ⚡ Quick Start
 
-### 1. Score an Excel File
+### 1. Install
+See [INSTALLATION.md](INSTALLATION.md) for setup instructions.
+
 ```bash
-python score_excel.py input.xlsx output.xlsx
+source .venv/bin/activate  # Activate virtual environment
+pip install -r requirements.lock.txt  # Install dependencies
+```
+
+### 2. Score an Excel File
+```bash
+python scripts/score_excel.py "AutoEIT Sample Transcriptions for Scoring.xlsx" "AutoEIT Sample Transcriptions for ScoringOutput.xlsx"
 ```
 
 **Input Format**:
@@ -34,14 +42,14 @@ python score_excel.py input.xlsx output.xlsx
 
 **Output**: Scored Excel file + evaluation metrics (if human scores present)
 
-### 2. Run Demo
+### 3. Run Demo
 ```bash
-python demo_evaluation.py
+python scripts/demo_evaluation.py
 ```
 
 Shows 10 sample responses with evaluation metrics.
 
-### 3. Run Tests
+### 4. Run Tests
 ```bash
 python -m pytest tests/ -v
 ```
@@ -102,13 +110,19 @@ spanish_eit_scorer/
 ├── eit_scorer/              ← Core package
 │   ├── core/                ← Scoring engine
 │   ├── evaluation/          ← Evaluation metrics
+│   ├── synthetic/           ← DataBuilder (optional)
 │   ├── utils/               ← I/O utilities
 │   └── config/              ← Rubric configuration
+├── scripts/                 ← CLI scripts
+│   ├── score_excel.py       ← Excel scoring
+│   ├── demo_evaluation.py   ← Evaluation demo
+│   └── databuilder.py       ← Synthetic data generation
 ├── tests/                   ← 108 tests (100% passing)
+├── docs/                    ← Documentation
 ├── results/                 ← Output directory
-├── score_excel.py           ← Excel scoring CLI
-├── demo_evaluation.py       ← Evaluation demo
-└── [Documentation files]
+├── README.md                ← Main documentation
+├── INSTALLATION.md          ← Setup guide
+└── START_HERE.md            ← This file
 ```
 
 ---
@@ -117,7 +131,7 @@ spanish_eit_scorer/
 
 ### Score Responses
 ```bash
-python score_excel.py input.xlsx output.xlsx
+python scripts/score_excel.py input.xlsx output.xlsx
 ```
 
 ### Evaluate Agreement
@@ -180,9 +194,9 @@ print(f"Score: {scored.score}/4")
 - **Is the system validated?** → Yes, 90% accuracy, κ=0.851 on test data
 
 ### Documentation
-- **Quick lookup**: `EVALUATION_QUICK_START.md`
-- **Full details**: `EVALUATION_LAYER_COMPLETE.md`
-- **System overview**: `FINAL_SYSTEM_REPORT.md`
+- **Quick lookup**: `docs/EVALUATION_QUICK_START.md`
+- **Full details**: `docs/EVALUATION_LAYER_COMPLETE.md`
+- **System overview**: `docs/FINAL_SYSTEM_REPORT.md`
 
 ### Testing
 ```bash
@@ -224,8 +238,8 @@ python demo_evaluation.py
 ## 📞 Support
 
 For detailed information, see:
-- `FINAL_SYSTEM_REPORT.md` - Complete system overview
-- `EVALUATION_LAYER_COMPLETE.md` - Evaluation details
-- `QUICK_REFERENCE.md` - Rules and features
+- `docs/FINAL_SYSTEM_REPORT.md` - Complete system overview
+- `docs/EVALUATION_LAYER_COMPLETE.md` - Evaluation details
+- `docs/QUICK_REFERENCE.md` - Rules and features
 
 **System Status**: ✅ **READY FOR PRODUCTION AND RESEARCH USE**
