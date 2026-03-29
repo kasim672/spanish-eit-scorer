@@ -354,26 +354,6 @@ class ScoringTrace:
 - Version control for all rubric changes
 - Detailed documentation and examples
 
-## Removed Components
-### ❌ Neural Similarity Network
-**Why removed**:
-- Introduced non-determinism (learned parameters)
-- Difficult to interpret (black box)
-- Overkill for EIT scoring (simple overlap metrics sufficient)
-- Difficult to reproduce (requires specific model weights)
-**Replacement**:
-- Multiset-based token overlap (deterministic, interpretable)
-- Content-word-only overlap (deterministic, interpretable)
-- Idea-unit coverage (deterministic, interpretable)
-### ❌ Probabilistic Features
-**Why removed**:
-- Introduced non-determinism
-- Difficult to interpret
-- Not needed for rule-based scoring
-**Replacement**:
-- Deterministic features (overlap, coverage, reordering)
-- All features are human-understandable
-
 ## Testing Strategy
 
 ### Unit Tests

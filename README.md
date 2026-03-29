@@ -19,6 +19,7 @@ The Spanish EIT Scorer is a production-ready system that automatically scores Sp
 - **Research-Grade Validation**: Cohen's κ = 0.851 (almost perfect agreement)
 - **Complete Audit Trails**: Full traceability for every scoring decision
 - **Excel Integration**: Batch processing with automatic evaluation
+- **FastAPI Interface**: Real-time scoring via REST API with interactive Swagger docs
 - **Comprehensive Testing**: 108 tests (100% passing)
 
 ---
@@ -231,6 +232,82 @@ print(metrics.detailed_report())
 
 ---
 
+## FastAPI Interface (Real-Time Scoring)
+
+The system includes a production-ready REST API for real-time scoring, enabling integration with web applications and research tools.
+
+### Start API Server
+
+```bash
+# Option 1: Using CLI command
+eit-api --host 0.0.0.0 --port 8000
+
+# Option 2: Using uvicorn directly
+cd apps/api
+uvicorn main:app --reload
+```
+
+### Access Points
+
+- **API Base**: http://localhost:8000
+- **Swagger Docs**: http://localhost:8000/docs (interactive API documentation)
+- **Health Check**: http://localhost:8000/health
+- **Rubric Info**: http://localhost:8000/rubric
+
+### Example Request
+
+**POST /score_batch**
+
+```json
+{
+  "items": [
+    {
+      "item_id": "1",
+      "reference": "Quiero cortarme el pelo",
+      "max_points": 4
+    }
+  ],
+  "responses": [
+    {
+      "participant_id": "P001",
+      "item_id": "1",
+      "response_text": "Quiero cortarme el pelo"
+    }
+  ]
+}
+```
+
+### Example Response
+
+```json
+{
+  "results": [
+    {
+      "participant_id": "P001",
+      "item_id": "1",
+      "score": 4,
+      "max_points": 4,
+      "rule_applied": "R4_exact_repetition",
+      "features": {
+        "total_edits": 0,
+        "content_subs": 0,
+        "idea_unit_coverage": 1.0,
+        "overlap_ratio": 1.0
+      }
+    }
+  ]
+}
+```
+
+### Key Notes
+
+- **Same Deterministic Pipeline**: Uses identical scoring logic as CLI
+- **No Difference**: API and offline scoring produce identical results
+- **Fully Reproducible**: Same input → same output (always)
+- **Production-Ready**: Designed for integration with web apps and research tools
+
+---
+
 ## Unique Features
 
 ### 1. Deterministic Scoring Engine
@@ -258,14 +335,14 @@ Automatic validation against human raters:
 - Automatic validity assessment
 - JSON export for publication
 
-### 4. Optional NLP DataBuilder
+### 4. NLP DataBuilder
 
 **Note**: Core scoring system is fully deterministic and does NOT depend on NLP.
 
 DataBuilder is an optional spaCy-based module for synthetic dataset generation:
 
 ```bash
-# Install spaCy model (optional)
+# Install spaCy model 
 python -m spacy download es_core_news_sm
 
 # Generate synthetic data
@@ -276,6 +353,14 @@ Features:
 - Controlled error injection (deletions, substitutions, pauses)
 - Simulated human scores
 - Reproducible with seed control
+
+### 5. Real-Time API Interface
+
+FastAPI-based REST interface for real-time scoring:
+- Interactive Swagger documentation
+- JSON-based batch scoring
+- Production-ready deployment support
+- Same deterministic pipeline as CLI
 
 ---
 
@@ -480,31 +565,6 @@ tests/test_synth_pipeline.py ..........                                  [100%]
 
 ---
 
-## Advanced Features
-
-### DataBuilder (Optional - Requires spaCy)
-
-Generate synthetic datasets with controlled errors:
-
-```bash
-# Install spaCy model
-python -m spacy download es_core_news_sm
-
-# Generate 100 synthetic responses
-python scripts/databuilder.py --count 100 --output data/synth/dataset.jsonl
-```
-
-**Note**: The core scoring system does NOT require spaCy. DataBuilder is an optional NLP-based module for synthetic dataset generation.
-
-### API Endpoint (Optional)
-
-FastAPI server for remote scoring:
-
-```bash
-cd apps/api
-uvicorn main:app --reload
-```
-
 ---
 
 ## Contributing
@@ -538,5 +598,3 @@ MIT License - See LICENSE file for details
 **Status**: ✅ **PRODUCTION-READY**  
 **Tests**: 108/108 passing (100%)  
 **Validation**: κ = 0.851 (almost perfect agreement)
-
-**Ready for**: Research use, production deployment, GSoC submission
