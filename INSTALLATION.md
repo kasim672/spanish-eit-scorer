@@ -54,6 +54,15 @@ pip install -r requirements.lock.txt
 - `scikit-learn` - Cohen's Kappa (optional, has built-in fallback)
 - `pytest` - Testing framework
 
+### (Optional) Install CLI Tools
+```bash
+pip install -e .
+```
+This enables commands like:
+Install Dependencies
+- eit-score
+- eit-api
+
 ### 4. Verify Installation
 
 ```bash
@@ -104,10 +113,64 @@ python scripts/demo_evaluation.py
 python scripts/score_excel.py "AutoEIT Sample Transcriptions for Scoring.xlsx" "AutoEIT Sample Transcriptions for ScoringOutput.xlsx"
 
 # Expected: 120 responses scored successfully
+
+# 4. Start API (optional)
+
+cd apps/api && uvicorn main:app --reload
+
+ # Open: # http://localhost:8000/docs
+
 ```
 
 ---
+## ⚙️ Advanced CLI Usage (Optional)
 
+### The project also provides command-line tools for advanced workflows such as dataset generation, batch scoring, and evaluation.
+
+#### 1. Generate Synthetic Dataset (DataBuilder)
+```bash
+eit-score synth --out data/synth --participants 100 --seed 42
+
+Without spaCy:
+eit-score synth --out data/synth --participants 100 --seed 42 --no-spacy
+```
+
+#### 2. Score Dataset
+```bash
+eit-score score \
+  --items data/synth/items.json \
+  --dataset data/synth/dataset.jsonl \
+   --out data/synth/scored.jsonl
+```
+
+#### 3. Evaluate Results
+```bash
+eit-score eval \
+  --scored data/synth/scored.jsonl \
+  --human adjudicated
+```
+
+#### 4. Start API Server (CLI)
+```bash
+eit-api --host 0.0.0.0 --port 8000
+
+Then open:
+
+http://localhost:8000
+http://localhost:8000/docs
+```
+### Note
+
+If CLI is not installed:
+
+```bash
+python -m eit_scorer.cli
+python -m apps.api.main
+ ```
+
+
+
+---
 ## Troubleshooting
 
 ### Issue: "ModuleNotFoundError: No module named 'eit_scorer'"
