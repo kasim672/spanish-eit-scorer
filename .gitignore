@@ -46,3 +46,7 @@ Thumbs.db
 *.ipynb
 .~lock.*
 .Excalidraw
+
+# ── Test artifacts ────────────────────────────────────────────
+test_output.xlsx
+output.xlsx

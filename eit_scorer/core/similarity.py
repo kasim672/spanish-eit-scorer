@@ -27,17 +27,30 @@ Architecture:
 
 from __future__ import annotations
 
-import torch
-import torch.nn as nn
+try:
+    import torch
+    import torch.nn as nn
+    _TORCH_AVAILABLE = True
+except ImportError:
+    _TORCH_AVAILABLE = False
+    torch = None  # type: ignore
+    nn = None  # type: ignore
 
 
-class SimilarityNet(nn.Module):
+class SimilarityNet:
     """
     Lightweight feedforward network for sentence-pair similarity.
     Input: 4 alignment features. Output: scalar in [0, 1].
+    
+    Note: Requires PyTorch. Install with: pip install torch
     """
 
     def __init__(self) -> None:
+        if not _TORCH_AVAILABLE:
+            raise ImportError(
+                "PyTorch is required for similarity scoring. "
+                "Install with: pip install torch"
+            )
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(4, 16),
@@ -48,7 +61,7 @@ class SimilarityNet(nn.Module):
             nn.Sigmoid(),
         )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x):
         return self.net(x)
 
 
@@ -58,7 +71,7 @@ def build_features(
     content_subs:   int,
     ref_len:        int,
     hyp_len:        int,
-) -> torch.Tensor:
+):
     """
     Build the 4-feature input tensor from alignment statistics.
 
@@ -67,7 +80,14 @@ def build_features(
         norm_edit_dist      — edits / max(ref_len, hyp_len, 1)
         content_sub_ratio   — content_subs / max(ref_len, 1)
         hyp_length_ratio    — hyp_len / max(ref_len, 1)
+    
+    Note: Requires PyTorch. Install with: pip install torch
     """
+    if not _TORCH_AVAILABLE:
+        raise ImportError(
+            "PyTorch is required for similarity scoring. "
+            "Install with: pip install torch"
+        )
     max_len = max(ref_len, hyp_len, 1)
     features = [
         overlap_ratio,
@@ -82,8 +102,17 @@ def build_features(
 _MODEL: SimilarityNet | None = None
 
 
-def get_model() -> SimilarityNet:
-    """Return the singleton SimilarityNet (rule-initialized weights)."""
+def get_model():
+    """
+    Return the singleton SimilarityNet (rule-initialized weights).
+    
+    Note: Requires PyTorch. Install with: pip install torch
+    """
+    if not _TORCH_AVAILABLE:
+        raise ImportError(
+            "PyTorch is required for similarity scoring. "
+            "Install with: pip install torch"
+        )
     global _MODEL
     if _MODEL is None:
         _MODEL = SimilarityNet()
@@ -117,7 +146,6 @@ def _init_weights(model: SimilarityNet) -> None:
         model.net[0].bias.zero_()
 
 
-@torch.no_grad()
 def compute_similarity(
     overlap_ratio: float,
     total_edits:   int,
@@ -136,8 +164,16 @@ def compute_similarity(
 
     Returns:
         float in [0, 1]
+    
+    Note: Requires PyTorch. Install with: pip install torch
     """
+    if not _TORCH_AVAILABLE:
+        raise ImportError(
+            "PyTorch is required for similarity scoring. "
+            "Install with: pip install torch"
+        )
     model = get_model()
     model.eval()
     x = build_features(overlap_ratio, total_edits, content_subs, ref_len, hyp_len)
-    return float(model(x.unsqueeze(0)).squeeze())
+    with torch.no_grad():
+        return float(model(x.unsqueeze(0)).squeeze())

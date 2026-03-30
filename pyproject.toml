@@ -32,6 +32,7 @@ dependencies = [
     "uvicorn[standard]>=0.22",
     "python-multipart>=0.0.6",
     "aiofiles>=23.0",
+    "openpyxl>=3.1",
 ]
 
 [project.optional-dependencies]
@@ -40,6 +41,9 @@ dev = [
     "pytest-cov>=4.0",
     "ruff>=0.1",
     "black>=23.0",
+]
+ml = [
+    "torch>=2.0",
 ]
 
 [project.scripts]
