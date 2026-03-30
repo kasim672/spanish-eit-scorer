@@ -73,6 +73,25 @@ Shows scoring + evaluation on 10 sample responses with κ = 0.851
 python -m pytest tests/ -v
 ```
 
+### 📓 Interactive (Jupyter Notebook)
+
+Explore the full system interactively:
+
+```bash
+pip install notebook
+jupyter notebook notebooks/AutoEIT.ipynb
+```
+
+The notebook demonstrates:
+- Single sentence scoring with detailed traces
+- Batch scoring on sample data
+- Excel file processing (real-world workflow)
+- Evaluation metrics (Cohen's Kappa, Accuracy, MAE)
+- Determinism verification
+- Optional: Synthetic data generation and API usage
+
+Perfect for reviewers, testers, and new users to understand the system quickly.
+
 ---
 
 ## Scoring System
